@@ -28,24 +28,24 @@
 #endif
 
 typedef struct {
-    int x, y, w, h;
-    int buttonType, buttonIcon;
-    bool highlighted, visible, selected, enabled;
-    gfxScreen_t screen;
-    gfx3dSide_t side;
-    char longText[32], shortText1[32], shortText2[32];
-    int value;
-    void (*callback)();
-    void *callbackObject1, *callbackObject2;
-    bool (*selectedCallback)();
-    int tag;
+	int x, y, w, h;
+	int buttonType, buttonIcon;
+	bool highlighted, visible, selected, enabled;
+	gfxScreen_t screen;
+	gfx3dSide_t side;
+	char longText[32], shortText1[32], shortText2[32];
+	int value;
+	void (*callback)();
+	void *callbackObject1, *callbackObject2;
+	bool (*selectedCallback)();
+	int tag;
 } button;
 
 #define buttonListMaxButtons 8
 
 typedef struct {
-    button buttons[buttonListMaxButtons][sizeof(button)];
-    int numButtons;
+	button buttons[buttonListMaxButtons][sizeof(button)];
+	int numButtons;
 } buttonList;
 
 void btnDrawButton(button * aButton);

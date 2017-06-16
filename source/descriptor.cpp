@@ -23,20 +23,20 @@ void initDescriptor(descriptor_s* d)
 void loadDescriptor(descriptor_s* d, char* path)
 {
 	if(!d || !path)return;
-    
-    XMLDocument doc;
-    if(doc.LoadFile(path))return;
+	
+	XMLDocument doc;
+	if(doc.LoadFile(path))return;
 
-    XMLElement* targets = doc.FirstChildElement("targets");
-    if(targets)
-    {
-    	// grab selectable target flag (default to false)
-    	{
-    		if(targets->QueryBoolAttribute("selectable", &d->selectTargetProcess)) d->selectTargetProcess = false;
-    	}
+	XMLElement* targets = doc.FirstChildElement("targets");
+	if(targets)
+	{
+		// grab selectable target flag (default to false)
+		{
+			if(targets->QueryBoolAttribute("selectable", &d->selectTargetProcess)) d->selectTargetProcess = false;
+		}
 
-    	// grab preferred target titles
-    	{
+		// grab preferred target titles
+		{
 			d->numTargetTitles = 0;
 			for (tinyxml2::XMLElement* child = targets->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 			{
@@ -63,19 +63,19 @@ void loadDescriptor(descriptor_s* d, char* path)
 					d->numTargetTitles++;
 				}
 			}
-    	}
-    }
+		}
+	}
 
-    XMLElement* services = doc.FirstChildElement("services");
-    if(services)
-    {
-    	// grab "autodetect services" flag (default to true)
-    	{
-    		if(services->QueryBoolAttribute("autodetect", &d->autodetectServices)) d->autodetectServices = true;
-    	}
+	XMLElement* services = doc.FirstChildElement("services");
+	if(services)
+	{
+		// grab "autodetect services" flag (default to true)
+		{
+			if(services->QueryBoolAttribute("autodetect", &d->autodetectServices)) d->autodetectServices = true;
+		}
 
-    	// grab requested services
-    	{
+		// grab requested services
+		{
 			d->numRequestedServices = 0;
 			for (tinyxml2::XMLElement* child = services->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 			{
@@ -100,8 +100,8 @@ void loadDescriptor(descriptor_s* d, char* path)
 					d->numRequestedServices++;
 				}
 			}
-    	}
-    }
+		}
+	}
 }
 
 void freeDescriptor(descriptor_s* d)

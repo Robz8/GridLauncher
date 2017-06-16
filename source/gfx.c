@@ -336,7 +336,7 @@ void gfxDrawWave(gfxScreen_t screen, gfx3dSide_t side, u8 rgbColorStart[3], u8 r
 }
 
 void gfxFlip() {
-    gfxFlushBuffers();
-    gfxSwapBuffers();
-    gspWaitForVBlank();
+	gfxFlushBuffers();
+	gfxSwapBuffers();
+	gspWaitForVBlank();
 }

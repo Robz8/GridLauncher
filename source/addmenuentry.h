@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-    void addMenuEntries(char paths[1024][1024], int totalEntries, int pathLength, menu_s* m, bool sortAlpha);
+	void addMenuEntries(char paths[1024][1024], int totalEntries, int pathLength, menu_s* m, bool sortAlpha);
 
 #ifdef __cplusplus
 }

@@ -3,18 +3,18 @@
 #include "menu.h"
 #include "shortcut.h"
 
-#define rootPath          "/gridlauncher/"
-#define themesPath        "/gridlauncher/themes/"
-#define foldersPath       "/gridlauncher/folders/"
+#define rootPath		  "/gridlauncher/"
+#define themesPath		"/gridlauncher/themes/"
+#define foldersPath	   "/gridlauncher/folders/"
 #define defaultThemePath  "/gridlauncher/themes/Default/"
-#define screenshotPath    "/gridlauncher/screenshots/"
-#define configFilePath    "/gridlauncher/hbl.cfg"
+#define screenshotPath	"/gridlauncher/screenshots/"
+#define configFilePath	"/gridlauncher/hbl.cfg"
 #define ignoredTitlesPath "/gridlauncher/ignoredtitles.txt"
 #define titleBannersPath  "/gridlauncher/titlebanners"
 
 typedef struct {
-    int numPaths;
-    char paths[1024][1024];
+	int numPaths;
+	char paths[1024][1024];
 } directoryContents;
 
 extern FS_Archive sdmcArchive;

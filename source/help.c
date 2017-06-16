@@ -30,35 +30,35 @@ char * themesHelpBody = "Create theme folders in /gridlauncher/themes/ on your S
 int previousMenuStatus = 0;
 
 void handleHelpBackButton() {
-    if (skipHelpMenu || !showingHelpDetails) {
-        hideWaves = false;
-        setMenuStatus(previousMenuStatus);
+	if (skipHelpMenu || !showingHelpDetails) {
+		hideWaves = false;
+		setMenuStatus(previousMenuStatus);
 
-        if (previousMenuStatus == menuStatusIcons) {
-            checkReturnToGrid(&menu);
+		if (previousMenuStatus == menuStatusIcons) {
+			checkReturnToGrid(&menu);
 
-            if (animatedGrids) {
-                startTransition(transitionDirectionUp, helpMenu.pagePosition, &helpMenu);
-            }
-        }
-        else if (previousMenuStatus == menuStatusFolders) {
-            checkReturnToGrid(&foldersMenu);
-        }
-        else if (previousMenuStatus == menuStatusThemeSelect) {
-            checkReturnToGrid(&themesMenu);
-        }
-    }
+			if (animatedGrids) {
+				startTransition(transitionDirectionUp, helpMenu.pagePosition, &helpMenu);
+			}
+		}
+		else if (previousMenuStatus == menuStatusFolders) {
+			checkReturnToGrid(&foldersMenu);
+		}
+		else if (previousMenuStatus == menuStatusThemeSelect) {
+			checkReturnToGrid(&themesMenu);
+		}
+	}
 
-    else {
-        showingHelpDetails = false;
-    }
+	else {
+		showingHelpDetails = false;
+	}
 }
 
 void showHelpDetails(char * title, char * body) {
-    startBlockingTouches();
-    helpTitleText = title;
-    helpBodyText = body;
-    showingHelpDetails = true;
+	startBlockingTouches();
+	helpTitleText = title;
+	helpBodyText = body;
+	showingHelpDetails = true;
 }
 
 bool helpNeedsInit = true;
@@ -66,85 +66,85 @@ bool helpNeedsInit = true;
 char helpButtonTitles[3][32];
 
 void initHelpMenu() {
-    helpNeedsInit = false;
+	helpNeedsInit = false;
 
-    strcpy(helpButtonTitles[0], "Back");
+	strcpy(helpButtonTitles[0], "Back");
 
-    helpMenu.entries=NULL;
-    helpMenu.numEntries=0;
-    helpMenu.selectedEntry=0;
-    helpMenu.scrollLocation=0;
-    helpMenu.scrollVelocity=0;
-    helpMenu.scrollBarSize=0;
-    helpMenu.scrollBarPos=0;
-    helpMenu.scrollTarget=0;
-    helpMenu.atEquilibrium=false;
+	helpMenu.entries=NULL;
+	helpMenu.numEntries=0;
+	helpMenu.selectedEntry=0;
+	helpMenu.scrollLocation=0;
+	helpMenu.scrollVelocity=0;
+	helpMenu.scrollBarSize=0;
+	helpMenu.scrollBarPos=0;
+	helpMenu.scrollTarget=0;
+	helpMenu.atEquilibrium=false;
 
-    char * titleTextFull = malloc(64);
-    sprintf(titleTextFull, "Homebrew Grid Launcher %s", currentversion);
+	char * titleTextFull = malloc(64);
+	sprintf(titleTextFull, "Homebrew Grid Launcher %s", currentversion);
 
-    addSettingsMenuEntry("About", "Details of the Homebrew Launcher and the Grid Launcher.", (u8*)helpIconAbout_bin, false, &helpMenu, &showHelpDetails, titleTextFull, "Original homebrew launcher by smealum.\nhttp://smealum.github.io/3ds/\n\nThis grid layout version by mashers.\nhttps://gbatemp.net/members/mashers.366855/");
+	addSettingsMenuEntry("About", "Details of the Homebrew Launcher and the Grid Launcher.", (u8*)helpIconAbout_bin, false, &helpMenu, &showHelpDetails, titleTextFull, "Original homebrew launcher by smealum.\nhttp://smealum.github.io/3ds/\n\nThis grid layout version by mashers.\nhttps://gbatemp.net/members/mashers.366855/");
 
-//    free(titleTextFull);
+//	free(titleTextFull);
 
-    addSettingsMenuEntry("Folders", "How to set up subfolders in the launcher.", (u8*)helpIconFolders_bin, false, &helpMenu, &showHelpDetails, foldersHelpTitle, foldersHelpBody);
+	addSettingsMenuEntry("Folders", "How to set up subfolders in the launcher.", (u8*)helpIconFolders_bin, false, &helpMenu, &showHelpDetails, foldersHelpTitle, foldersHelpBody);
 
-    addSettingsMenuEntry("Themes", "How to set up themes in the launcher.", (u8*)settingsIconTheme_bin, false, &helpMenu, &showHelpDetails, themesHelpTitle, themesHelpBody);
+	addSettingsMenuEntry("Themes", "How to set up themes in the launcher.", (u8*)settingsIconTheme_bin, false, &helpMenu, &showHelpDetails, themesHelpTitle, themesHelpBody);
 
-    addSettingsMenuEntry("Ignoring titles", "How to exclude titles from the title launcher.", (u8*)helpIconIgnoredTitles_bin, false, &helpMenu, &showHelpDetails, "Ignoring titles", "Select 'Title filtering' from the settings. Select a title and press A or touch it again to toggle its visibility in the title launcher and save manager.");
+	addSettingsMenuEntry("Ignoring titles", "How to exclude titles from the title launcher.", (u8*)helpIconIgnoredTitles_bin, false, &helpMenu, &showHelpDetails, "Ignoring titles", "Select 'Title filtering' from the settings. Select a title and press A or touch it again to toggle its visibility in the title launcher and save manager.");
 }
 
 void showHelpCommon() {
-    if (helpNeedsInit) {
-        initHelpMenu();
-    }
+	if (helpNeedsInit) {
+		initHelpMenu();
+	}
 
-    hideWaves = true;
-    previousMenuStatus = menuStatus;
-    setMenuStatus(menuStatusHelp);
+	hideWaves = true;
+	previousMenuStatus = menuStatus;
+	setMenuStatus(menuStatusHelp);
 }
 
 void showHelp() {
-    showHelpCommon();
-    skipHelpMenu = false;
-    showingHelpDetails = false;
-    updateMenuIconPositions(&helpMenu);
-    gotoFirstIcon(&helpMenu);
+	showHelpCommon();
+	skipHelpMenu = false;
+	showingHelpDetails = false;
+	updateMenuIconPositions(&helpMenu);
+	gotoFirstIcon(&helpMenu);
 
-    if (animatedGrids) {
-        startTransition(transitionDirectionDown, menu.pagePosition, &menu);
-    }
+	if (animatedGrids) {
+		startTransition(transitionDirectionDown, menu.pagePosition, &menu);
+	}
 }
 
 void showHelpWithForcedText(char * title, char * body) {
-    showHelpCommon();
-    skipHelpMenu = true;
-    showingHelpDetails = true;
-    helpTitleText = title;
-    helpBodyText = body;
+	showHelpCommon();
+	skipHelpMenu = true;
+	showingHelpDetails = true;
+	helpTitleText = title;
+	helpBodyText = body;
 }
 
 void drawHelp() {
-    if (showingHelpDetails) {
-        int alertResult = drawAlert(helpTitleText, helpBodyText, NULL, 1, helpButtonTitles);
-        if (alertResult == 0 || alertResult == alertButtonKeyB) {
-            handleHelpBackButton();
-        }
-    }
-    else {
-        drawGrid(&helpMenu);
-        drawBottomStatusBar("Help");
-    }
+	if (showingHelpDetails) {
+		int alertResult = drawAlert(helpTitleText, helpBodyText, NULL, 1, helpButtonTitles);
+		if (alertResult == 0 || alertResult == alertButtonKeyB) {
+			handleHelpBackButton();
+		}
+	}
+	else {
+		drawGrid(&helpMenu);
+		drawBottomStatusBar("Help");
+	}
 }
 
 void handleHelpMenuSelection() {
-    int selectedEntry = helpMenu.selectedEntry;
-    menuEntry_s * selectedMenuEntry = getMenuEntry(&helpMenu, selectedEntry);
-    (selectedMenuEntry->callback)(selectedMenuEntry->callbackObject1, selectedMenuEntry->callbackObject2);
+	int selectedEntry = helpMenu.selectedEntry;
+	menuEntry_s * selectedMenuEntry = getMenuEntry(&helpMenu, selectedEntry);
+	(selectedMenuEntry->callback)(selectedMenuEntry->callbackObject1, selectedMenuEntry->callbackObject2);
 }
 
 void updateHelp() {
-    if (!showingHelpDetails && updateGrid(&helpMenu)) {
-        handleHelpMenuSelection();
-    }
+	if (!showingHelpDetails && updateGrid(&helpMenu)) {
+		handleHelpMenuSelection();
+	}
 }

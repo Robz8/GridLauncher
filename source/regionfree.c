@@ -9,8 +9,7 @@ Handle nssHandle = 0;
 smdh_s gamecardSmdh;
 menuEntry_s gamecardMenuEntry;
 
-Result regionFreeInit()
-{
+Result regionFreeInit() {
 	Result ret = srvGetServiceHandle(&nssHandle, "ns:s");
 
 	if(!ret)regionFreeAvailable = true;
@@ -19,13 +18,11 @@ Result regionFreeInit()
 	return ret;
 }
 
-Result regionFreeExit()
-{
+Result regionFreeExit() {
 	return svcCloseHandle(nssHandle);
 }
 
-void regionFreeUpdate()
-{
+void regionFreeUpdate() {
 	if(!regionFreeAvailable)return;
 
 	Result ret = loadGamecardIcon(&gamecardSmdh);
@@ -35,14 +32,13 @@ void regionFreeUpdate()
 	if(regionFreeGamecardIn)extractSmdhData(&gamecardSmdh, gamecardMenuEntry.name, gamecardMenuEntry.description, gamecardMenuEntry.author, gamecardMenuEntry.iconData);
 }
 
-Result loadGamecardIcon(smdh_s* out)
-{
+Result loadGamecardIcon(smdh_s* out) {
 	if(!out)return -1;
 
 	Handle fileHandle;
 	static const u32 archivePath[] = {0x00000000, 0x00000000, 0x00000002, 0x00000000};
 	static const u32 filePath[] = {0x00000000, 0x00000000, 0x00000002, 0x6E6F6369, 0x00000000};
-	Result ret = FSUSER_OpenFileDirectly(&fileHandle, (FS_Archive){0x2345678a, (FS_Path){PATH_BINARY, 0x10, (u8*)archivePath}}, (FS_Path){PATH_BINARY, 0x14, (u8*)filePath}, FS_OPEN_READ, 0);
+	Result ret = FSUSER_OpenFileDirectly(&fileHandle, ARCHIVE_SAVEDATA_AND_CONTENT, (FS_Path){PATH_BINARY, 0x10, (u8*)archivePath}}, (FS_Path){PATH_BINARY, 0x14, (u8*)filePath}, FS_OPEN_READ, 0);
 	if(ret)return ret;
 
 	u32 bytesRead;
@@ -53,8 +49,7 @@ Result loadGamecardIcon(smdh_s* out)
 	return ret;
 }
 
-Result NSS_Reboot(u32 pid_low, u32 pid_high, u8 mediatype, u8 flag)
-{
+Result NSS_Reboot(u32 pid_low, u32 pid_high, u8 mediatype, u8 flag) {
 	Result ret = 0;
 	u32 *cmdbuf = getThreadCommandBuffer();
 
@@ -71,24 +66,10 @@ Result NSS_Reboot(u32 pid_low, u32 pid_high, u8 mediatype, u8 flag)
 	return (Result)cmdbuf[1];
 }
 
-//Result regionFreeRun()
-//{
-//	Result ret = NSS_Reboot(0x00000000, 0x00000000, 0x2, 0x1);
-//
-//	regionFreeExit();
-//
-//	return ret;
-//}
+Result regionFreeRun2(u32 pid_low, u32 pid_high, u8 mediatype, u8 flag) {
+	Result ret = NSS_Reboot(pid_low, pid_high, mediatype, flag);
 
-/*
- regionFreeRun2() by suloku. Thank you very much for this!!!
- */
+	regionFreeExit();
 
-Result regionFreeRun2(u32 pid_low, u32 pid_high, u8 mediatype, u8 flag)
-{
-    Result ret = NSS_Reboot(pid_low, pid_high, mediatype, flag);
-
-    regionFreeExit();
-
-    return ret;
+	return ret;
 }

@@ -13,12 +13,12 @@ typedef struct
 	char* descriptor;
 	char* icon;
 	char* arg;
-    char* name;
-    char* description;
-    char* author;
-    char bannerImagePath[129];
-    bool bannerIsFullScreen;
-    bool hasBanner;
+	char* name;
+	char* description;
+	char* author;
+	char bannerImagePath[129];
+	bool bannerIsFullScreen;
+	bool hasBanner;
 }shortcut_s;
 
 void initShortcut(shortcut_s* d);

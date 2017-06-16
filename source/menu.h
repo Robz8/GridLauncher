@@ -103,32 +103,32 @@ typedef struct menuEntry_s
 	char name[ENTRY_NAMELENGTH+1];
 	char description[ENTRY_DESCLENGTH+1];
 	char author[ENTRY_AUTHORLENGTH+1];
-    char arg[ENTRY_ARGLENGTH+1];
+	char arg[ENTRY_ARGLENGTH+1];
 	u8 iconData[ENTRY_ICONSIZE];
 	descriptor_s descriptor;
 	struct menuEntry_s* next;
-    int page;
-    int row;
-    int col;
-    int iconX;
-    int iconY;
-    int iconW;
-    int iconH;
-    bool hidden;
-    bool isRegionFreeEntry;
-    bool isTitleEntry;
-    u64 title_id;
-    u8 mediatype;
-    bool * showTick;
-    void (*callback)();
-    void *callbackObject1;
-    void *callbackObject2;
-    bool drawFirstLetterOfName;
-    bool drawFullTitle;
-    bool isShortcut;
-    bool bannerIsFullScreen;
-    bool hasBanner;
-    bool isWithinContainingFolder;
+	int page;
+	int row;
+	int col;
+	int iconX;
+	int iconY;
+	int iconW;
+	int iconH;
+	bool hidden;
+	bool isRegionFreeEntry;
+	bool isTitleEntry;
+	u64 title_id;
+	u8 mediatype;
+	bool * showTick;
+	void (*callback)();
+	void *callbackObject1;
+	void *callbackObject2;
+	bool drawFirstLetterOfName;
+	bool drawFullTitle;
+	bool isShortcut;
+	bool bannerIsFullScreen;
+	bool hasBanner;
+	bool isWithinContainingFolder;
 }menuEntry_s;
 
 typedef struct
@@ -144,7 +144,7 @@ typedef struct
 	s32 scrollBarPos;
 	touchPosition previousTouch, firstTouch;
 	bool atEquilibrium;
-    int totalPages, rowPosition, colPosition, pagePosition; //totalRows
+	int totalPages, rowPosition, colPosition, pagePosition; //totalRows
 }menu_s;
 
 extern menuEntry_s regionfreeEntry;

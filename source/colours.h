@@ -7,10 +7,10 @@ extern menu_s colourSelectMenu;
 extern bool colourSelectMenuNeedsInit;
 
 typedef struct {
-    u8 r, g, b;
-    u8 defR, defG, defB;
-    char key[32];
-    char description[32];
+	u8 r, g, b;
+	u8 defR, defG, defB;
+	char key[32];
+	char description[32];
 } rgbColour;
 
 extern rgbColour * settingsColour;

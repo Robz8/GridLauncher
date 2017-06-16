@@ -11,6 +11,7 @@
 #include "MAGFX.h"
 #include "config.h"
 #include "regionfree.h"
+#include "logText.h" 
 
 extern int debugValues[100];
 
@@ -145,7 +146,7 @@ int populateTitleList(titleList_s* tl)
 			return 1;
 		}
 
-		ret = AM_GetTitleIdList(tl->mediatype, num, tmp);
+		ret = AM_GetTitleList(NULL, tl->mediatype, num, tmp);
 
 		if(!ret)
 		{
@@ -228,271 +229,273 @@ void initTitleBrowser(titleBrowser_s* tb, titleFilter_callback filter)
 bool titleBrowserRefreshed = false;
 
 void refreshTitleBrowser(titleBrowser_s* tb) {
-    if (titleBrowserRefreshed) return;
-    titleBrowserRefreshed = true;
+	if (titleBrowserRefreshed) return;
+	titleBrowserRefreshed = true;
 
-    tb->total = 0;
-    tb->selectedId = 0;
+	tb->total = 0;
+	tb->selectedId = 0;
 
-    int i;
+	int i;
 
-    for(i=0; i<3; i++) {
-        freeTitleList(&tb->lists[i]);
-        populateTitleList(&tb->lists[i]);
-        tb->total += tb->lists[i].num;
-    }
+	for(i=0; i<3; i++) {
+		freeTitleList(&tb->lists[i]);
+		populateTitleList(&tb->lists[i]);
+		tb->total += tb->lists[i].num;
+	}
 }
 
 void getIgnoredTitleIDs() {
-    if (!ignoreTitleIDsLoaded) {
-        ignoreTitleIDsLoaded = true;
-        numIgnoreTitleIDs = 0;
-        int maxTextSize = 20 * maxIgnoreTitleIDs;
-        char ignoreText[maxTextSize];
+	if (!ignoreTitleIDsLoaded) {
+		ignoreTitleIDsLoaded = true;
+		numIgnoreTitleIDs = 0;
+		int maxTextSize = 20 * maxIgnoreTitleIDs;
+		char ignoreText[maxTextSize];
 
-        FILE *fp = fopen(ignoredTitlesPath, "r");
+		FILE *fp = fopen(ignoredTitlesPath, "r");
 
-        if (fp != NULL) {
-            fgets(ignoreText, maxTextSize, fp);
-            char * split;
-            split = strtok(ignoreText, ",");
-            while (split != NULL) {
-                strcpy(ignoreTitleIDs[numIgnoreTitleIDs], split);
-                numIgnoreTitleIDs++;
+		if (fp != NULL) {
+			fgets(ignoreText, maxTextSize, fp);
+			char * split;
+			split = strtok(ignoreText, ",");
+			while (split != NULL) {
+				strcpy(ignoreTitleIDs[numIgnoreTitleIDs], split);
+				numIgnoreTitleIDs++;
 
-                split = strtok(NULL, ",");
-            }
-        }
-        fclose(fp);
-    }
+				split = strtok(NULL, ",");
+			}
+		}
+		fclose(fp);
+	}
 }
 
 void saveIgnoredTitleIDs() {
-    int n = 0;
+	int n = 0;
 
-    menuEntry_s * me = titleMenu.entries;
-    while (me) {
-        if (!me->showTick) {
-            n++;
-        }
+	menuEntry_s * me = titleMenu.entries;
+	while (me) {
+		if (!me->showTick) {
+			n++;
+		}
 
-        me = me->next;
-    }
+		me = me->next;
+	}
 
-    char ignored[n*20];
-    strcpy(ignored, "");
+	char ignored[n*20];
+	strcpy(ignored, "");
 
-    int c=0;
+	int c=0;
 
-    me = titleMenu.entries;
-    while (me) {
-        if (!me->showTick) {
-            char sTitleId[17];
-            sprintf(sTitleId, "%llu", me->title_id);
-            strcat(ignored, sTitleId);
+	me = titleMenu.entries;
+	while (me) {
+		if (!me->showTick) {
+			char sTitleId[17];
+			sprintf(sTitleId, "%llu", me->title_id);
+			strcat(ignored, sTitleId);
 
-            if (c < n-1) {
-                strcat(ignored, ",");
-            }
+			if (c < n-1) {
+				strcat(ignored, ",");
+			}
 
-            c++;
-        }
+			c++;
+		}
 
-        me = me->next;
-    }
+		me = me->next;
+	}
 
-    FILE* fSave = fopen(ignoredTitlesPath, "w" );
-    if (fSave != NULL) {
-        fputs(ignored, fSave);
-    }
-    fclose(fSave);
+	FILE* fSave = fopen(ignoredTitlesPath, "w" );
+	if (fSave != NULL) {
+		fputs(ignored, fSave);
+	}
+	fclose(fSave);
 
-    ignoreTitleIDsLoaded = false;
-    getIgnoredTitleIDs();
+	ignoreTitleIDsLoaded = false;
+	getIgnoredTitleIDs();
 }
 
 bool titleIgnored(u64 titleID) {
-    char sTitleId[17];
-    sprintf(sTitleId, "%llu", titleID);
+	char sTitleId[17];
+	sprintf(sTitleId, "%llu", titleID);
 
-    int iIgnoreTitleID;
-    for (iIgnoreTitleID=0; iIgnoreTitleID<numIgnoreTitleIDs; iIgnoreTitleID++) {
-        if (strcmp(sTitleId, ignoreTitleIDs[iIgnoreTitleID]) == 0) {
-            return true;
-        }
-    }
+	int iIgnoreTitleID;
+	for (iIgnoreTitleID=0; iIgnoreTitleID<numIgnoreTitleIDs; iIgnoreTitleID++) {
+		if (strcmp(sTitleId, ignoreTitleIDs[iIgnoreTitleID]) == 0) {
+			return true;
+		}
+	}
 
-    return false;
+	return false;
 }
 
 //#include "MAFontRobotoRegular.h"
 
 void addTitleBannerImagePathToMenuEntry(menuEntry_s *me, u64 title_id) {
-    char sTitleID[32];
-    sprintf(sTitleID, "%llu", title_id);
-    addBannerPathToMenuEntry(me->bannerImagePath, titleBannersPath, sTitleID, &me->bannerIsFullScreen, &me->hasBanner);
+	char sTitleID[32];
+	sprintf(sTitleID, "%llu", title_id);
+	addBannerPathToMenuEntry(me->bannerImagePath, titleBannersPath, sTitleID, &me->bannerIsFullScreen, &me->hasBanner);
 }
 
 void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool forceHideRegionFree, bool setFilterTicks) {
-    getIgnoredTitleIDs();
+	getIgnoredTitleIDs();
 
-    if (!aTitleMenu) {
-        return;
-    }
+	if (!aTitleMenu) {
+		return;
+	}
 
-    aTitleMenu->entries=NULL;
-    aTitleMenu->numEntries=0;
-    aTitleMenu->selectedEntry=0;
-    aTitleMenu->scrollLocation=0;
-    aTitleMenu->scrollVelocity=0;
-    aTitleMenu->scrollBarSize=0;
-    aTitleMenu->scrollBarPos=0;
-    aTitleMenu->scrollTarget=0;
-    aTitleMenu->atEquilibrium=false;
+	aTitleMenu->entries=NULL;
+	aTitleMenu->numEntries=0;
+	aTitleMenu->selectedEntry=0;
+	aTitleMenu->scrollLocation=0;
+	aTitleMenu->scrollVelocity=0;
+	aTitleMenu->scrollBarSize=0;
+	aTitleMenu->scrollBarPos=0;
+	aTitleMenu->scrollTarget=0;
+	aTitleMenu->atEquilibrium=false;
 
-    /*
-    If there is no game cart in right now but there needs to be one shown if a cart is inserted,
-    add a hidden dummy entry to the menu. This entry will be updated with the cart details
-    and shown if a cart is inserted.
-    */
+	/*
+	If there is no game cart in right now but there needs to be one shown if a cart is inserted,
+	add a hidden dummy entry to the menu. This entry will be updated with the cart details
+	and shown if a cart is inserted.
+	*/
 
-    if (!regionFreeGamecardIn && !forceHideRegionFree) {
-        static menuEntry_s rfEntry;
-        rfEntry.hidden = true;
-        rfEntry.isTitleEntry = false;
-        rfEntry.isRegionFreeEntry = true;
-        rfEntry.isShortcut = false;
-        addMenuEntryCopy(aTitleMenu, &rfEntry);
-    }
+	if (!regionFreeGamecardIn && !forceHideRegionFree) {
+		static menuEntry_s rfEntry;
+		rfEntry.hidden = true;
+		rfEntry.isTitleEntry = false;
+		rfEntry.isRegionFreeEntry = true;
+		rfEntry.isShortcut = false;
+		addMenuEntryCopy(aTitleMenu, &rfEntry);
+	}
 
-    int i;
+	int i;
 
-    for(i=0; i<3; i++) {
-        const titleList_s* tl = &tb->lists[i];
-        titleInfo_s *titles = tl->titles;
+	for(i=0; i<3; i++) {
+		const titleList_s* tl = &tb->lists[i];
+		titleInfo_s *titles = tl->titles;
 
-        int titleNum;
-        int count = tl->num;
+		int titleNum;
+		int count = tl->num;
 
-        for (titleNum = 0; titleNum < count; titleNum++) {
-//            MADrawText(GFX_TOP, GFX_LEFT, 0, 0, "Loading", &MAFontRobotoRegular10, 255, 255, 255);
+		for (titleNum = 0; titleNum < count; titleNum++) {
+//			MADrawText(GFX_TOP, GFX_LEFT, 0, 0, "Loading", &MAFontRobotoRegular10, 255, 255, 255);
 
-            while (titleLoadPaused) {
-//                MADrawText(GFX_TOP, GFX_LEFT, 15, 0, "Paused", &MAFontRobotoRegular10, 255, 255, 255);
-                svcSleepThread(1000000000ULL);
+			while (titleLoadPaused) {
+//				MADrawText(GFX_TOP, GFX_LEFT, 15, 0, "Paused", &MAFontRobotoRegular10, 255, 255, 255);
+				svcSleepThread(1000000000ULL);
 
-                if (titleLoadCancelled) {
-                    return;
-                }
-            }
+				if (titleLoadCancelled) {
+					return;
+				}
+			}
 
-            if (titleLoadCancelled) {
-                return;
-            }
+			if (titleLoadCancelled) {
+				return;
+			}
 
-            /*
-            If a game card is not inserted, we do not need to add the first title.
-            This is because a dummy entry for the cart was already added above.
-            */
+			/*
+			If a game card is not inserted, we do not need to add the first title.
+			This is because a dummy entry for the cart was already added above.
+			*/
 
-            if (i==0 && titleNum == 0 && (!regionFreeGamecardIn || forceHideRegionFree)) {
-                continue;
-            }
+			if (i==0 && titleNum == 0 && (!regionFreeGamecardIn || forceHideRegionFree)) {
+				continue;
+			}
 
-            titleInfo_s aTitle = titles[titleNum];
+			titleInfo_s aTitle = titles[titleNum];
 
-            if (filter && titleIgnored(aTitle.title_id)) {
-                continue;
-            }
+			if (filter && titleIgnored(aTitle.title_id)) {
+				continue;
+			}
 
-            if (!aTitle.icon) {
-                loadTitleInfoIcon(&aTitle);
-            }
+			if (!aTitle.icon) {
+				loadTitleInfoIcon(&aTitle);
+			}
 
-            if (!aTitle.icon) {
-                continue;
-            }
+			if (!aTitle.icon) {
+				continue;
+			}
 
-            static menuEntry_s me;
+			static menuEntry_s me;
 
-            me.hidden = false;
-            me.isTitleEntry = false;
-            me.isRegionFreeEntry = false;
-            me.isShortcut = false;
-            me.bannerImagePath[0] = '\0';
+			me.hidden = false;
+			me.isTitleEntry = false;
+			me.isRegionFreeEntry = false;
+			me.isShortcut = false;
+			me.bannerImagePath[0] = '\0';
 
-            addTitleBannerImagePathToMenuEntry(&me, aTitle.title_id);
-//            addTitleBannerImagePathToMenuEntry(&me, 1125899907535104);
+			addTitleBannerImagePathToMenuEntry(&me, aTitle.title_id);
+//			addTitleBannerImagePathToMenuEntry(&me, 1125899907535104);
 
 
-            /*
-            If adding the title for the inserted cart, set its isRegionFreeEntry flag.
-            We need to do this here because it won't have been done by adding the dummy
-            entry above.
-            */
+			/*
+			If adding the title for the inserted cart, set its isRegionFreeEntry flag.
+			We need to do this here because it won't have been done by adding the dummy
+			entry above.
+			*/
 
-            if (i==0 && titleNum == 0 && regionFreeGamecardIn) {
-                me.isRegionFreeEntry = true;
-            }
+			if (i==0 && titleNum == 0 && regionFreeGamecardIn) {
+				me.isRegionFreeEntry = true;
+			}
 
-            extractSmdhData(aTitle.icon, me.name, me.description, me.author, me.iconData);
+			extractSmdhData(aTitle.icon, me.name, me.description, me.author, me.iconData);
 
-            me.title_id = aTitle.title_id;
-            me.mediatype = aTitle.mediatype;
+			me.title_id = aTitle.title_id;
+			me.mediatype = aTitle.mediatype;
 
-            if (me.title_id == 1125968626461184) {
-                strcpy(me.name, "System Transfer");
-                strcpy(me.description, "System Transfer");
-            }
+			if (me.title_id == 1125968626461184) {
+				strcpy(me.name, "System Transfer");
+				strcpy(me.description, "System Transfer");
+			}
 
-            if (setFilterTicks) {
-                if (titleIgnored(aTitle.title_id)) {
-                    me.showTick = NULL;
-                }
-                else {
-                    me.showTick = &trueBool;
-                }
-            }
-            else {
-                me.showTick = NULL;
-            }
+			if (setFilterTicks) {
+				if (titleIgnored(aTitle.title_id)) {
+					me.showTick = NULL;
+				}
+				else {
+					me.showTick = &trueBool;
+				}
+			}
+			else {
+				me.showTick = NULL;
+			}
 
-            addMenuEntryCopy(aTitleMenu, &me);
+			addMenuEntryCopy(aTitleMenu, &me);
 
-//                titleMenu->numEntries = titleMenu->numEntries + 1;
-            updateMenuIconPositions(aTitleMenu);
+//				titleMenu->numEntries = titleMenu->numEntries + 1;
+			updateMenuIconPositions(aTitleMenu);
 
-            if (titleLoadCancelled) {
-                return;
-            }
-        }
-    }
+			if (titleLoadCancelled) {
+				return;
+			}
+		}
+	}
 
-    updateMenuIconPositions(aTitleMenu);
+	updateMenuIconPositions(aTitleMenu);
 }
 
 //titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid) {
-//    int i;
-//    for(i=0; i<3; i++) {
-//        const titleList_s* tl = &tb->lists[i];
-//        titleInfo_s *titles = tl->titles;
+//	int i;
+//	for(i=0; i<3; i++) {
+//		const titleList_s* tl = &tb->lists[i];
+//		titleInfo_s *titles = tl->titles;
 //
-//        int titleNum;
-//        int count = tl->num;// sizeof(titles) / sizeof(titleInfo_s);
+//		int titleNum;
+//		int count = tl->num;// sizeof(titles) / sizeof(titleInfo_s);
 //
-//        for (titleNum = 0; titleNum < count; titleNum++) {
-//            titleInfo_s * aTitle = &titles[titleNum];
-//            if (aTitle->title_id == tid) {
-//                return aTitle;
-//            }
-//        }
+//		for (titleNum = 0; titleNum < count; titleNum++) {
+//			titleInfo_s * aTitle = &titles[titleNum];
+//			if (aTitle->title_id == tid) {
+//				return aTitle;
+//			}
+//		}
 //
-//    }
+//	}
 //
-//    return NULL;
+//	return NULL;
 //}
 
-Handle titleLoadThreadHandle, titleLoadThreadRequest;
+Handle titleLoadThreadRequest; 
+Thread titleLoadThread;
+
 u32 *titleLoadThreadStack;
 #define STACKSIZE (4 * 1024)
 
@@ -506,120 +509,117 @@ bool titleThreadNeedsRelease = false;
 bool populateFilterTicksWhenLoading;
 
 void resumeTitleLoading() {
-    titleLoadPaused = false;
+	titleLoadPaused = false;
 }
 
 void pauseTitleLoading() {
-    titleLoadPaused = true;
+	titleLoadPaused = true;
 }
 
 void cancelTitleLoading() {
-    titleLoadCancelled = true;
-    titleLoadPaused = false;
-    titleMenuInitialLoadDone = false;
-    titlemenuIsUpdating = false;
-//    svcSignalEvent(titleLoadThreadRequest);
+	titleLoadCancelled = true;
+	titleLoadPaused = false;
+	titleMenuInitialLoadDone = false;
+	titlemenuIsUpdating = false;
+//	svcSignalEvent(titleLoadThreadRequest);
 }
 
 void titleLoadFunction() {
-    refreshTitleBrowser(reloadTitleBrowser);
-    clearMenuEntries(reloadTitleMenu);
-    populateTitleMenu(reloadTitleMenu, reloadTitleBrowser, filterTitlesWhenLoading, forceHideRegionFreeWhenLoading, populateFilterTicksWhenLoading);
+	refreshTitleBrowser(reloadTitleBrowser);
+	clearMenuEntries(reloadTitleMenu);
+	populateTitleMenu(reloadTitleMenu, reloadTitleBrowser, filterTitlesWhenLoading, forceHideRegionFreeWhenLoading, populateFilterTicksWhenLoading);
 
-    if (titleLoadCancelled) {
-//        logText("Returned from cancelled populate function");
-    }
-    else {
-//        logText("Title load completed");
-        titlemenuIsUpdating = false;
-        titleMenuInitialLoadDone = true;
-    }
+	if (titleLoadCancelled) {
+//		logText("Returned from cancelled populate function");
+	}
+	else {
+//		logText("Title load completed");
+		titlemenuIsUpdating = false;
+		titleMenuInitialLoadDone = true;
+	}
 }
 
 void titleLoadThreadFunction(void *arg) {
-    while (1) {
-        svcWaitSynchronization(titleLoadThreadRequest, U64_MAX);
-        svcClearEvent(titleLoadThreadRequest);
+	while (1) {
+		svcWaitSynchronization(titleLoadThreadRequest, U64_MAX);
+		svcClearEvent(titleLoadThreadRequest);
 
-        titleLoadFunction();
+		titleLoadFunction();
 
-//        logText("Returned from titleLoadFunction");
+//		logText("Returned from titleLoadFunction");
 
-        if (titleLoadCancelled) {
-            titleLoadCancelled = false;
-//            logText("Cancelled");
-        }
+		if (titleLoadCancelled) {
+			titleLoadCancelled = false;
+//			logText("Cancelled");
+		}
 
-        svcExitThread();
-    }
+		svcExitThread();
+	}
 }
 
 void releaseTitleThread() {
-    svcCloseHandle(titleLoadThreadRequest);
-    svcCloseHandle(titleLoadThreadHandle);
-    free(titleLoadThreadStack);
-    titleThreadNeedsRelease = false;
+	svcCloseHandle(titleLoadThreadRequest);
+	threadFree(titleLoadThread); 
+	titleThreadNeedsRelease = false;
 }
 
 void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char * titleText, bool filter, bool forceHideRegionFree, bool setFilterTicks) {
-    if (titlemenuIsUpdating) {
-        return;
-    }
+	if (titlemenuIsUpdating) {
+		return;
+	}
 
-    titlemenuIsUpdating = true;
-    titleMenuInitialLoadDone = false;
-    titleLoadCancelled = false;
+	titlemenuIsUpdating = true;
+	titleMenuInitialLoadDone = false;
+	titleLoadCancelled = false;
 
-    if (titleThreadNeedsRelease) {
-        releaseTitleThread();
-    }
+	if (titleThreadNeedsRelease) {
+		releaseTitleThread();
+	}
 
-    reloadTitleMenu = aTitleMenu;
-    reloadTitleBrowser = aTitleBrowser;
-    filterTitlesWhenLoading = filter;
-    forceHideRegionFreeWhenLoading = forceHideRegionFree;
-    populateFilterTicksWhenLoading = setFilterTicks;
+	reloadTitleMenu = aTitleMenu;
+	reloadTitleBrowser = aTitleBrowser;
+	filterTitlesWhenLoading = filter;
+	forceHideRegionFreeWhenLoading = forceHideRegionFree;
+	populateFilterTicksWhenLoading = setFilterTicks;
 
-    if (aTitleMenu->numEntries > 0) {
-        gotoFirstIcon(aTitleMenu);
-    }
+	if (aTitleMenu->numEntries > 0) {
+		gotoFirstIcon(aTitleMenu);
+	}
 
-    if (preloadTitles) {
-        titleThreadNeedsRelease = true;
+	if (preloadTitles) {
+		titleThreadNeedsRelease = true;
 
-        svcCreateEvent(&titleLoadThreadRequest,0);
-        titleLoadThreadStack = memalign(32, STACKSIZE);
-        Result ret = svcCreateThread(&titleLoadThreadHandle, titleLoadThreadFunction, 0, &titleLoadThreadStack[STACKSIZE/4], 0x3f, 0);
-
-        if (ret == 0) {
-            svcSignalEvent(titleLoadThreadRequest);
-        }
-        else {
-            titleLoadFunction();
-        }
-    }
-    else {
-        drawDisk("Loading titles");
-        gfxFlip();
-        titleLoadFunction();
-    }
+		svcCreateEvent(&titleLoadThreadRequest,0);
+        titleLoadThread = threadCreate(titleLoadThreadFunction, 0, STACKSIZE/4, 0x3f, 0, true); 
+		if (titleLoadThread != NULL) { 
+			svcSignalEvent(titleLoadThreadRequest);
+		}
+		else {
+			titleLoadFunction();
+		}
+	}
+	else {
+		drawDisk("Loading titles");
+		gfxFlip();
+		titleLoadFunction();
+	}
 }
 
 void toggleTitleFilter(menuEntry_s *me, menu_s * m) {
-    if (me->showTick == NULL) {
-        me->showTick = &trueBool;
-    }
-    else {
-        me->showTick = NULL;
-    }
+	if (me->showTick == NULL) {
+		me->showTick = &trueBool;
+	}
+	else {
+		me->showTick = NULL;
+	}
 }
 
 void createTitleInfoFromTitleID(u64 title_id, u8 mediaType, titleInfo_s *info) {
-    if (!info)
-        return;
+	if (!info)
+		return;
 
-    info->title_id = title_id;
-    info->mediatype = mediaType;
+	info->title_id = title_id;
+	info->mediatype = mediaType;
 }
 
 

@@ -7,9 +7,9 @@
 typedef struct {int asciiID, x, y, w, h;} MACharDesc;
 
 typedef struct {
-    MACharDesc * charDescs;
-    u8 * data;
-    int nChars, pngW, pngH, lineHeight;
+	MACharDesc * charDescs;
+	u8 * data;
+	int nChars, pngW, pngH, lineHeight;
 } MAFont;
 
 typedef struct {int cursorx, cursory;} MACursorPosition;

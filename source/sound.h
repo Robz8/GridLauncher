@@ -2,11 +2,11 @@
 #include <3ds.h>
 
 typedef struct themeSound {
-    u8* sndbuffer;
-    u32 sndsize;
-    int channel;
-    bool loaded;
-    int duration;
+	u8* sndbuffer;
+	u32 sndsize;
+	int channel;
+	bool loaded;
+	int duration;
 } themeSound;
 
 extern themeSound themeSoundBGM;

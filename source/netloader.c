@@ -47,38 +47,38 @@ static void netloader_socket_error(const char *func, int err) {
 static char progress[256];
 
 void drawNetloaderBackground() {
-    rgbColour * bgc = backgroundColour();
+	rgbColour * bgc = backgroundColour();
 
-    gfxFillColor(GFX_BOTTOM, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
-    gfxFillColor(GFX_TOP, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
+	gfxFillColor(GFX_BOTTOM, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
+	gfxFillColor(GFX_TOP, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
 
-    //Wallpaper
-    if (themeImageExists(themeImageTopWallpaperInfo)) {
-        drawThemeImage(themeImageTopWallpaperInfo, GFX_TOP, 0, 0);
-    }
-    else if (themeImageExists(themeImageTopWallpaper)) {
-        drawThemeImage(themeImageTopWallpaper, GFX_TOP, 0, 0);
-    }
+	//Wallpaper
+	if (themeImageExists(themeImageTopWallpaperInfo)) {
+		drawThemeImage(themeImageTopWallpaperInfo, GFX_TOP, 0, 0);
+	}
+	else if (themeImageExists(themeImageTopWallpaper)) {
+		drawThemeImage(themeImageTopWallpaper, GFX_TOP, 0, 0);
+	}
 
-    if (themeImageExists(themeImageBottomWallpaperNonGrid)) {
-        drawThemeImage(themeImageBottomWallpaperNonGrid, GFX_BOTTOM, 0, 0);
-    }
+	if (themeImageExists(themeImageBottomWallpaperNonGrid)) {
+		drawThemeImage(themeImageBottomWallpaperNonGrid, GFX_BOTTOM, 0, 0);
+	}
 
-    else if (themeImageExists(themeImageBottomWallpaper)) {
-        drawThemeImage(themeImageBottomWallpaper, GFX_BOTTOM, 0, 0);
-    }
+	else if (themeImageExists(themeImageBottomWallpaper)) {
+		drawThemeImage(themeImageBottomWallpaper, GFX_BOTTOM, 0, 0);
+	}
 
-    drawStatusBar(wifiStatus, charging, batteryLevel);
+	drawStatusBar(wifiStatus, charging, batteryLevel);
 }
 
 static int netloader_draw_progress(void) {
 	char info[1024];
 	sprintf(info, "Transferring: %s\n\n%s",netloadedPath,progress);
 
-    drawNetloaderBackground();
-    drawAlert("NetLoader", info, NULL, 0, NULL);
+	drawNetloaderBackground();
+	drawAlert("NetLoader", info, NULL, 0, NULL);
 
-    gfxFlip();
+	gfxFlip();
 
 //	gfxFlushBuffers();
 //	gfxSwapBuffers();
@@ -168,7 +168,7 @@ static int decompress(int sock, FILE *fh, size_t filesize) {
 		switch (ret) {
 
 			case Z_NEED_DICT:
-			ret = Z_DATA_ERROR;     /* and fall through */
+			ret = Z_DATA_ERROR;	 /* and fall through */
 
 			case Z_DATA_ERROR:
 			case Z_MEM_ERROR:
@@ -201,8 +201,8 @@ static int decompress(int sock, FILE *fh, size_t filesize) {
 
 
 int netloader_draw_error(void) {
-    drawNetloaderBackground();
-    drawAlert("NetLoader error", errbuf, NULL, 0, NULL);
+	drawNetloaderBackground();
+	drawAlert("NetLoader error", errbuf, NULL, 0, NULL);
 	return 0;
 }
 
@@ -311,7 +311,7 @@ int netloader_deactivate(void) {
 	if(netloader_udpfd >= 0)
 	{
 		closesocket(netloader_udpfd);
-		netloader_datafd = -1;
+		netloader_udpfd = -1;
 	}
 
 	return 0;
@@ -328,6 +328,11 @@ int load3DSX(int sock, u32 remote) {
 		netloader_socket_error("Error getting name length", errno);
 		return -1;
 	}
+	
+	if (namelen >= sizeof(filename)-1) { 
+		netloader_socket_error("Filename length is too large",errno); 
+		return -1; 
+	} 
 
 	len = recvall(sock, filename, namelen, 0);
 
@@ -388,6 +393,7 @@ int load3DSX(int sock, u32 remote) {
 
 	free(netloadedPath);
 	free(writebuffer);
+	ftruncate(fileno(file), ftell(file)); 
 	fclose(file);
 
 	if (response == 0) {

@@ -23,7 +23,7 @@ static waterEffect_s waterEffect;
 static int backgroundCnt;
 
 void initWater() {
-    initWaterEffect(&waterEffect, BG_WATER_CONTROLPOINTS, BG_WATER_NEIGHBORHOODS, BG_WATER_DAMPFACTOR, BG_WATER_SPRINGFACTOR, BG_WATER_WIDTH, BG_WATER_OFFSET);
+	initWaterEffect(&waterEffect, BG_WATER_CONTROLPOINTS, BG_WATER_NEIGHBORHOODS, BG_WATER_DAMPFACTOR, BG_WATER_SPRINGFACTOR, BG_WATER_WIDTH, BG_WATER_OFFSET);
 	backgroundCnt = 0;
 }
 
@@ -41,61 +41,61 @@ u8 tintedWaterBorder[70*400*4];
 bool staticWaterDrawn = false;
 
 void drawWater() {
-    if (waterEnabled) {
-        rgbColour * waterTop = waterTopColour();
-        rgbColour * waterBottom = waterBottomColour();
+	if (waterEnabled) {
+		rgbColour * waterTop = waterTopColour();
+		rgbColour * waterBottom = waterBottomColour();
 
-        if (!waterAnimated) {
-            if (hideWaves) {
-                if (staticWaterX > -70) {
-                    staticWaterX -= 2;
-                }
-            }
-            else {
-                if (staticWaterX < 0) {
-                    staticWaterX += 2;
-                }
-            }
-
-
-            if (!staticWaterDrawn) {
-                MAGFXImageWithRGBAndAlphaMask(waterBottom->r, waterBottom->g, waterBottom->b, (u8*)stillwater_bin, tintedWater, 70, 400);
-                MAGFXImageWithRGBAndAlphaMask(waterTop->r, waterTop->g, waterTop->b, (u8*)stillwaterborder_bin, tintedWaterBorder, 70, 400);
-                    staticWaterDrawn = true;
-            }
+		if (!waterAnimated) {
+			if (hideWaves) {
+				if (staticWaterX > -70) {
+					staticWaterX -= 2;
+				}
+			}
+			else {
+				if (staticWaterX < 0) {
+					staticWaterX += 2;
+				}
+			}
 
 
-            gfxDrawSpriteAlphaBlendFade(GFX_TOP, GFX_LEFT, tintedWater, 70, 400, staticWaterX, 0, translucencyWater);
-            gfxDrawSpriteAlphaBlendFade(GFX_TOP, GFX_LEFT, tintedWaterBorder, 70, 400, staticWaterX, 0, translucencyWater);
-            return;
-        }
-
-        if (hideWaves) {
-            if (lowerLevel > 0) {
-                topLevel -= 1;
-                lowerLevel -= 1;
-            }
-        }
-        else {
-            if (lowerLevel < waterLowerLevel) {
-                topLevel += 1;
-                lowerLevel += 1;
-            }
-        }
+			if (!staticWaterDrawn) {
+				MAGFXImageWithRGBAndAlphaMask(waterBottom->r, waterBottom->g, waterBottom->b, (u8*)stillwater_bin, tintedWater, 70, 400);
+				MAGFXImageWithRGBAndAlphaMask(waterTop->r, waterTop->g, waterTop->b, (u8*)stillwaterborder_bin, tintedWaterBorder, 70, 400);
+					staticWaterDrawn = true;
+			}
 
 
-        u8 * waterBorderColor = (u8[]){waterTop->r, waterTop->g, waterTop->b};
-        u8 * waterColor = (u8[]){waterBottom->r, waterBottom->g, waterBottom->b};
+			gfxDrawSpriteAlphaBlendFade(GFX_TOP, GFX_LEFT, tintedWater, 70, 400, staticWaterX, 0, translucencyWater);
+			gfxDrawSpriteAlphaBlendFade(GFX_TOP, GFX_LEFT, tintedWaterBorder, 70, 400, staticWaterX, 0, translucencyWater);
+			return;
+		}
 
-        gfxDrawWave(GFX_TOP, GFX_LEFT, waterBorderColor, waterColor, topLevel, 20, 5, (gfxWaveCallback)&evaluateWater, &waterEffect);
-        gfxDrawWave(GFX_TOP, GFX_LEFT, waterColor, waterBorderColor, lowerLevel, 20, 0, (gfxWaveCallback)&evaluateWater, &waterEffect);
-    }
+		if (hideWaves) {
+			if (lowerLevel > 0) {
+				topLevel -= 1;
+				lowerLevel -= 1;
+			}
+		}
+		else {
+			if (lowerLevel < waterLowerLevel) {
+				topLevel += 1;
+				lowerLevel += 1;
+			}
+		}
+
+
+		u8 * waterBorderColor = (u8[]){waterTop->r, waterTop->g, waterTop->b};
+		u8 * waterColor = (u8[]){waterBottom->r, waterBottom->g, waterBottom->b};
+
+		gfxDrawWave(GFX_TOP, GFX_LEFT, waterBorderColor, waterColor, topLevel, 20, 5, (gfxWaveCallback)&evaluateWater, &waterEffect);
+		gfxDrawWave(GFX_TOP, GFX_LEFT, waterColor, waterBorderColor, lowerLevel, 20, 0, (gfxWaveCallback)&evaluateWater, &waterEffect);
+	}
 }
 
 void updateWater() {
-    if (!waterAnimated) {
-        return;
-    }
+	if (!waterAnimated) {
+		return;
+	}
 
 	exciteWater(&waterEffect, sin(backgroundCnt*0.1f)*2.0f, 0, true);
 	updateWaterEffect(&waterEffect);
