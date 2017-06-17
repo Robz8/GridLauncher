@@ -1,7 +1,6 @@
 #include "folders.h"
 #include "filesystem.h"
 #include <string.h>
-#include "utils.h"
 #include "config.h"
 #include "stdlib.h"
 #include "smdh.h"
