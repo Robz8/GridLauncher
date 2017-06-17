@@ -118,6 +118,7 @@ void exitServices() {
 	hidExit();
 	gfxExit();
 	closeSDArchive();
+	cfguExit();
 	exitFilesystem();
 	aptExit();
 	srvExit();
@@ -569,6 +570,7 @@ int main(int argc, char *argv[])
 	srvInit();
 	aptInit();
 	gfxInitDefault();
+	cfguInit();
 	hidInit();
 
 	hidScanInput();

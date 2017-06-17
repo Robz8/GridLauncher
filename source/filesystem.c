@@ -7,7 +7,6 @@
 
 #include "filesystem.h"
 #include "smdh.h"
-#include "utils.h"
 
 #include "addmenuentry.h"
 #include "config.h"
@@ -291,7 +290,7 @@ void scanHomebrewDirectory(menu_s* m, char* path) {
         {
             strncpy(fullPath[totalentries], path, 1024);
             int n=strlen(fullPath[totalentries]);
-            unicodeToChar(&fullPath[totalentries][n], entry.name, 1024-n);
+            utf16_to_utf8(&fullPath[totalentries][n], entry.name, 1024-n);
             if(entry.attributes & FS_ATTRIBUTE_DIRECTORY) //directories
             {
                 //addDirectoryToMenu(m, fullPath[totalentries]);
