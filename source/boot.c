@@ -84,6 +84,26 @@ bool isNinjhax2(void) {
 	} else return true;
 }
 
+void bootSetTargetTitle(titleInfo_s info)
+{
+    target_title = info;
+    targetProcessId = -2;
+    custom_map = false;
+
+    static char path[256];
+    snprintf(path, 255, "sdmc:/mmap/%08X%08X.xml", (unsigned int)((target_title.title_id >> 32) & 0xffffffff), (unsigned int)(target_title.title_id & 0xffffffff));
+    memorymap_t* _mmap = loadMemoryMap(path);
+    if(_mmap)
+    {
+        _mmap->header.processHookTidLow = target_title.title_id & 0xffffffff;
+        _mmap->header.processHookTidHigh = (target_title.title_id >> 32) & 0xffffffff;
+        _mmap->header.mediatype = target_title.mediatype;
+        memcpy(mmap, _mmap, size_memmap(*_mmap));
+        free(_mmap);
+        custom_map = true;
+    }
+}
+
 int bootApp(char* executablePath, executableMetadata_s* em, char* arg)
 {
 	// set argv/argc
