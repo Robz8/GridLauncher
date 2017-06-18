@@ -7,6 +7,7 @@
 
 #include "filesystem.h"
 #include "smdh.h"
+#include "utils.h"
 
 #include "addmenuentry.h"
 #include "config.h"
