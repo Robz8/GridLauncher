@@ -85,7 +85,7 @@ void launchSVDTFromTitleMenu() {
 			if (me->title_id > 0) {
 				titleInfo_s target_title; 
 				createTitleInfoFromTitleID(me->title_id, me->mediatype, &target_title);
-				bootSetTargetTitle;
+				bootSetTargetTitle(target_title);
 
 				die = true;
 			}
@@ -132,7 +132,7 @@ void launchTitleFromMenu(menu_s* m) {
 			if (me->title_id > 0) {
 				titleInfo_s target_title; 
 				createTitleInfoFromTitleID(me->title_id, me->mediatype, &target_title);
-				bootSetTargetTitle;
+				bootSetTargetTitle(target_title);
 
 					exitServices();
 					dieImmediately = true;
@@ -532,12 +532,12 @@ void handleMenuSelection() {
 
 			if(ret)
 			{
-				bootSetTargetTitle;
+				bootSetTargetTitle(*ret);
 				die = true;
 				return;
 			}
 
-			// if we get here, we didn't find anything
+			// if we get here, we aint found shit
 			// if appropriate, let user select target title
 			if(me->descriptor.selectTargetProcess) {
 				showSVDTTitleSelect();
@@ -968,7 +968,7 @@ int main(int argc, char *argv[])
 		if (hansTitleBoot) {
 			titleInfo_s target_title; 
 			createTitleInfoFromTitleID(me->title_id, me->mediatype, &target_title);
-			bootSetTargetTitle; 
+			bootSetTargetTitle(target_title); 
 
 			regionFreeExit();
 			exitServices();
