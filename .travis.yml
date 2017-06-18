@@ -16,14 +16,8 @@ install:
   - unzip /tmp/3ds_portlibs.zip
   - sudo cp -R portlibs ${DEVKITPRO}/
 script:
-  - echo "Starting compilation"
-  - cd twlnand-side
-  - echo "Compiling TWLoader NAND Side"
-  - make
-  - cd ..
-  - echo "Compiling TWLoader GUI"
-  - cd gui
-  - make
+  - echo "Starting compilation"  
+  - make  
   - echo "Compilation ended"
 addons:
   apt:
