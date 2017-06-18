@@ -25,7 +25,7 @@ typedef struct
 {
 	targetTitle_s* targetTitles;
 	u32 numTargetTitles;
-	
+
 	serviceRequest_s *requestedServices;
 	u32 numRequestedServices;
 

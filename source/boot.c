@@ -160,7 +160,7 @@ int bootApp(char* executablePath, executableMetadata_s* em, char* arg)
 			} while(str<endarg);
 
 		}
-		
+
 		if(netloader_boot)
 		{
 			while (ptr < netloaded_commandline + netloaded_cmdlen)
@@ -172,7 +172,7 @@ int bootApp(char* executablePath, executableMetadata_s* em, char* arg)
 				argbuffer[0]++;
 			}
 		}
-		
+
 		argbuffer_length = (int)((void*)dst - (void*)argbuffer);
 	}
 

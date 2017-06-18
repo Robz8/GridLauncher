@@ -26,7 +26,7 @@ void startBlockingTouches() {
 	if (touchThreadNeedsRelease) {
 		releaseTouchThread();
 	}
-	
+
 	touchThreadNeedsRelease = true;
 	touchesAreBlocked = true;
 	svcCreateEvent(&touchBlockThreadRequest,0);

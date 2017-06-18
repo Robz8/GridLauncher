@@ -9,7 +9,7 @@ void initDescriptor(descriptor_s* d)
 
 	d->targetTitles = NULL;
 	d->numTargetTitles = 0;
-	
+
 	d->requestedServices = NULL;
 	d->numRequestedServices = 0;
 
@@ -23,7 +23,7 @@ void initDescriptor(descriptor_s* d)
 void loadDescriptor(descriptor_s* d, char* path)
 {
 	if(!d || !path)return;
-	
+
 	XMLDocument doc;
 	if(doc.LoadFile(path))return;
 

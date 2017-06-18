@@ -158,8 +158,7 @@ void putTitleMenu(char * barTitle) {
 
 void handleMenuSelection();
 
-void renderFrame()
-{
+void renderFrame() {
 	// background stuff
 
 	rgbColour * bgc = backgroundColour();
@@ -812,8 +811,7 @@ int main(int argc, char *argv[])
 				hbmenu_state = HBMENU_DEFAULT;
 			}else{
 				int rc = netloader_loop();
-				if(rc > 0)
-				{
+				if(rc > 0) {
 					netloader_boot = true;
 					break;
 				}else if(rc < 0){
@@ -845,7 +843,7 @@ int main(int argc, char *argv[])
 		} else if(hbmenu_state == HBMENU_NETLOADER_ERROR) {
 			if(hidKeysDown()&KEY_B)
 				hbmenu_state = HBMENU_DEFAULT;
-		}else if (!showRebootMenu) {
+		} else if (!showRebootMenu) {
 
 			if(hidKeysDown()&KEY_START) {
 				alertSelectedButton = 0;

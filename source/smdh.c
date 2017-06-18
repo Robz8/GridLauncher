@@ -28,7 +28,7 @@ int extractSmdhData(smdh_s* s, char* name, char* desc, char* auth, u8* iconData)
 	if(name)extractSmdhField((uint8_t *)name, s->applicationTitles[language].shortDescription, 0x40);
 	if(desc)extractSmdhField((uint8_t *)desc, s->applicationTitles[language].longDescription, 0x80);
 	if(auth)extractSmdhField((uint8_t *)auth, s->applicationTitles[language].publisher, 0x40);
-	
+
 	if(iconData) {
 		u16* data=s->bigIconData;
 		//convert RGB565 to RGB24
