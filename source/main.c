@@ -132,7 +132,7 @@ void launchTitleFromMenu(menu_s* m) {
 			if (me->title_id > 0) {
 				titleInfo_s target_title; 
 				createTitleInfoFromTitleID(me->title_id, me->mediatype, &target_title);
-				bootSetTargetTitle(target_title);
+				bootSetTargetTitle;
 
 					exitServices();
 					dieImmediately = true;
