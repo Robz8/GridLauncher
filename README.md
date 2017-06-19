@@ -14,4 +14,4 @@ Select the "?" icon in the top right corner of the launcher to view help pages. 
 
 To compile, you'll need DevkitARM, zlib, 3DS portlibss and libpng.
 
-More developement will be on [Mario Making Mods](http://mariomods.net/thread/120-gridlauncher-2-0#post1047)
+More developement will be on [Mario Making Mods](http://mariomods.net/thread/120-gridlauncher-2-0#post1047) but there will still be some updates on [GBATemp](https://gbatemp.net/threads/gridlauncher-2-0.474881/)
